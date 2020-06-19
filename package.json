@@ -29,5 +29,28 @@
     "eslint-plugin-react-hooks": "^4.0.4",
     "jest": "^26.0.1",
     "prettier": "^2.0.5"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/constnats/*.js",
+      "!src/fixtures/*.js",
+      "!src/hooks/*.js",
+      "!src/utils/*.js",
+      "!src/pages/_app.js",
+      "!src/pages/_document.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 95,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    },
+    "coverageReporters": [
+      "html",
+      "text"
+    ]
   }
 }
