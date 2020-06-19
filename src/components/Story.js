@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -10,7 +10,7 @@ import {
 import { getStory } from '../services/hnApi';
 import mapTime from '../utils/mapTime';
 
-const Story = ({ storyId }) => {
+const Story = memo(function Story({ storyId }) {
   const [story, setStory] = useState({});
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const Story = ({ storyId }) => {
       </StoryMeta>
     </StoryWrapper>
   ) : null;
-};
+});
 
 Story.propTypes = {
   storyId: PropTypes.number.isRequired,
