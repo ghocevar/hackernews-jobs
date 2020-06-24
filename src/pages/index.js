@@ -12,8 +12,13 @@ import Header from '../components/Header';
 import GET_ALL_ARTICLES from '../graphql/allArticles';
 
 export async function getServerSideProps(req) {
-  const origin = req.req.headers.referer;
-  const data = await request(`${origin}api/graphql`, GET_ALL_ARTICLES);
+  let { host } = req.req.headers;
+  console.log(host);
+  console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV === 'development') host = `http://${host}`;
+  else host = `https://${host}`;
+  console.log(host);
+  const data = await request(`${host}/api/graphql`, GET_ALL_ARTICLES);
   return {
     props: {
       data,
