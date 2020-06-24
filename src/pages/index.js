@@ -1,22 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
+import { request } from 'graphql-request';
 
 import Story from '../components/Story';
 import StoriesContainerWrapper from '../styles/StoriesContainerStyles';
 
-import { jobsUrl } from '../services/hnApi';
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import Header from '../components/Header';
 
-export async function getServerSideProps() {
-  const res = await fetch(jobsUrl);
-  const storyIds = await res.json();
+import GET_ALL_ARTICLES from '../graphql/allArticles';
 
-  return { props: { storyIds } };
+export async function getServerSideProps() {
+  const data = await request(
+    'http://localhost:3000/api/graphql',
+    GET_ALL_ARTICLES
+  );
+  return {
+    props: {
+      data,
+    },
+  };
 }
 
-const Index = ({ storyIds }) => {
+const Index = ({ data: { allHackernewsArticles } }) => {
   const { count } = useInfiniteScroll();
 
   return (
@@ -28,15 +35,17 @@ const Index = ({ storyIds }) => {
       <p className="description">
         View jobs of the most actively hiring YC companies.
       </p>
-      {storyIds.slice(0, count).map((storyId) => (
-        <Story key={storyId} storyId={storyId} />
+      {allHackernewsArticles.slice(0, count).map((article) => (
+        <Story key={article.id} {...article} />
       ))}
     </StoriesContainerWrapper>
   );
 };
 
 Index.propTypes = {
-  storyIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+  data: PropTypes.shape({
+    allHackernewsArticles: PropTypes.array,
+  }).isRequired,
 };
 
 export default Index;
