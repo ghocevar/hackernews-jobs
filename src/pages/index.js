@@ -11,11 +11,9 @@ import Header from '../components/Header';
 
 import GET_ALL_ARTICLES from '../graphql/allArticles';
 
-export async function getServerSideProps() {
-  const data = await request(
-    'http://localhost:3000/api/graphql',
-    GET_ALL_ARTICLES
-  );
+export async function getServerSideProps(req) {
+  const origin = req.req.headers.referer;
+  const data = await request(`${origin}api/graphql`, GET_ALL_ARTICLES);
   return {
     props: {
       data,
