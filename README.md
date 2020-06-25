@@ -19,4 +19,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Future plans for the project
 
-Add unit tests, imporve infinite scroll and build CI/CD Pipeline.
+Add unit tests, improve infinite scroll functionality and build CI/CD Pipeline.
