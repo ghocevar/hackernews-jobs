@@ -9,7 +9,7 @@ import {
 } from '../styles/ArticleStyles';
 import mapTime from '../utils/mapTime';
 
-const Article = memo(function Article({ title, url, by, time }) {
+const Article = ({ title, url, by, time }) => {
   return url ? (
     <ArticleWrapper>
       <ArticleTitle>
@@ -31,7 +31,7 @@ const Article = memo(function Article({ title, url, by, time }) {
       </ArticleMeta>
     </ArticleWrapper>
   ) : null;
-});
+};
 
 Article.propTypes = {
   title: PropTypes.string.isRequired,
@@ -40,4 +40,4 @@ Article.propTypes = {
   time: PropTypes.string.isRequired,
 };
 
-export default Article;
+export default memo(Article);
