@@ -11,9 +11,14 @@ import Header from '../components/Header';
 
 import GET_ALL_ARTICLES from '../graphql/allArticles';
 
-export async function getServerSideProps(req) {
-  let { host } = req.req.headers;
-  if (process.env.NODE_ENV === 'development') host = `http://${host}`;
+export async function getServerSideProps({ req }) {
+  let { host } = req.headers;
+  if (
+    process.env.NODE_ENV === 'development' ||
+    host.includes('localhost:') ||
+    host.includes('127.0.0.1:')
+  )
+    host = `http://${host}`;
   else host = `https://${host}`;
 
   const data = await request(`${host}/api/graphql`, GET_ALL_ARTICLES);
