@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import { request } from 'graphql-request';
 
-import Story from '../components/Story';
-import StoriesContainerWrapper from '../styles/StoriesContainerStyles';
+import Article from '../components/Article';
+import ArticlesContainerWrapper from '../styles/ArticlesContainerStyles';
 
 import useInfiniteScroll from '../hooks/useInfiniteScroll';
 import Header from '../components/Header';
@@ -13,11 +13,9 @@ import GET_ALL_ARTICLES from '../graphql/allArticles';
 
 export async function getServerSideProps(req) {
   let { host } = req.req.headers;
-  console.log(host);
-  console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') host = `http://${host}`;
   else host = `https://${host}`;
-  console.log(host);
+
   const data = await request(`${host}/api/graphql`, GET_ALL_ARTICLES);
   return {
     props: {
@@ -30,18 +28,18 @@ const Index = ({ data: { allHackernewsArticles } }) => {
   const { count } = useInfiniteScroll();
 
   return (
-    <StoriesContainerWrapper data-test-id="stories-container">
+    <ArticlesContainerWrapper data-test-id="articles-container">
       <Head>
-        <title>Jobs | Hacker News</title>
+        <title>Hacker News Jobs</title>
       </Head>
       <Header />
       <p className="description">
         View jobs of the most actively hiring YC companies.
       </p>
       {allHackernewsArticles.slice(0, count).map((article) => (
-        <Story key={article.id} {...article} />
+        <Article key={article.id} {...article} />
       ))}
-    </StoriesContainerWrapper>
+    </ArticlesContainerWrapper>
   );
 };
 
