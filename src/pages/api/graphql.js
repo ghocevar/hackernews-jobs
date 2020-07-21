@@ -1,8 +1,9 @@
+/* eslint-disable import/no-unresolved */
 import { ApolloServer } from 'apollo-server-micro';
 
-import typeDefs from './_typedefs';
-import resolvers from './_resolvers';
-import HackerNewsAPI from './_datasources/hnApi';
+import typeDefs from '@/api/typedefs';
+import resolvers from '@/api/resolvers';
+import HackerNewsAPI from '@/api/datasources/hnApi';
 
 const server = new ApolloServer({
   typeDefs,
