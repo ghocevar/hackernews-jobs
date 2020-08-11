@@ -11,17 +11,12 @@ import Header from '../components/Header';
 
 import GET_ALL_ARTICLES from '../graphql/allArticles';
 
-export async function getServerSideProps({ req }) {
-  let { host } = req.headers;
-  if (
-    process.env.NODE_ENV === 'development' ||
-    host.includes('localhost:') ||
-    host.includes('127.0.0.1:')
-  )
-    host = `http://${host}`;
-  else host = `https://${host}`;
+export async function getServerSideProps() {
+  const data = await request(
+    `https://os2ur82bcc.execute-api.eu-central-1.amazonaws.com/dev/graphql`,
+    GET_ALL_ARTICLES
+  );
 
-  const data = await request(`${host}/api/graphql`, GET_ALL_ARTICLES);
   return {
     props: {
       data,
@@ -29,7 +24,7 @@ export async function getServerSideProps({ req }) {
   };
 }
 
-const Index = ({ data: { allHackernewsArticles } }) => {
+const Index = ({ data: { allArticles } }) => {
   const { count } = useInfiniteScroll();
 
   return (
@@ -41,7 +36,7 @@ const Index = ({ data: { allHackernewsArticles } }) => {
       <p className="description">
         View jobs of the most actively hiring YC companies.
       </p>
-      {allHackernewsArticles.slice(0, count).map((article) => (
+      {allArticles.slice(0, count).map((article) => (
         <Article key={article.id} {...article} />
       ))}
     </ArticlesContainerWrapper>
@@ -50,7 +45,15 @@ const Index = ({ data: { allHackernewsArticles } }) => {
 
 Index.propTypes = {
   data: PropTypes.shape({
-    allHackernewsArticles: PropTypes.array,
+    allArticles: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        title: PropTypes.string,
+        url: PropTypes.string,
+        by: PropTypes.string,
+        time: PropTypes.string,
+      })
+    ),
   }).isRequired,
 };
 

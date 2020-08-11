@@ -1,8 +1,8 @@
-import { gql } from 'apollo-server-micro';
+import { gql } from 'apollo-server-lambda';
 
 export default gql`
   type Query {
-    allHackernewsArticles: [Article!]!
+    allArticles: [Article!]!
   }
 
   type Article {

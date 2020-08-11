@@ -1,6 +1,6 @@
 {
   "name": "hackernews-jobs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,10 +9,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "apollo-datasource-rest": "^0.9.2",
-    "apollo-server-micro": "^2.15.0",
-    "axios": "^0.19.2",
-    "graphql": "^15.1.0",
     "graphql-request": "^2.0.0",
     "next": "9.4.4",
     "prop-types": "^15.7.2",
@@ -21,7 +17,6 @@
     "styled-components": "^5.1.1"
   },
   "devDependencies": {
-    "@testing-library/react": "^10.3.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.2.0",
     "eslint-config-airbnb": "^18.1.0",
@@ -31,7 +26,6 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.4",
-    "jest": "^26.0.1",
     "prettier": "^2.0.5"
   }
 }
