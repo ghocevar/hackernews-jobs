@@ -16,7 +16,3 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-### Future plans for the project
-
-Add unit tests, improve infinite scroll functionality and build CI/CD Pipeline.

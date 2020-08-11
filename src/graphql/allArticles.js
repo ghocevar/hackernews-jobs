@@ -1,6 +1,6 @@
 export default `
 {
-  allHackernewsArticles {
+  allArticles {
     id
     title
     url
