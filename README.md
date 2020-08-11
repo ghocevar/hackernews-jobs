@@ -7,7 +7,7 @@ This is a [hackernews-jobs](https://hackernews-jobs.vercel.app/) project bootstr
 ##### Folder structure
 
 ```bash
-spectrum/
+hackernews-jobs/
 ├── api        # API Server
 ├── public     # Public files used on the frontend
 ├── src        # Frontend SPA
