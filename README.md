@@ -2,7 +2,7 @@
 
 Following tutorial by [Karl Hawden](https://github.com/karlhadwen) building [Hackernews Clone](https://www.youtube.com/watch?v=7DLRJj1YjvQ&t=7044s) and adding some personal modifications to it.
 
-This is a [hackernews-jobs](https://hackernews-jobs.vercel.app/) project bootstrapped with React, Next.js and Styled Components. Using Vercel's Serverless Functions for Apollo Server to fetch Hacker News API. App is deployed via [Vercel Platform](https://vercel.com/).
+This is a [hackernews-jobs](https://hackernews-jobs.vercel.app/) project bootstrapped with React, Next.js and Styled Components. App is deployed via [Vercel Platform](https://vercel.com/).
 
 ##### Folder structure
 
@@ -28,4 +28,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ##### API Server
 
-Using [Serverless Framework](https://serverless.com) to run Apollo GraphQL Server on AWS Lambda.
+Using [Serverless Framework](https://serverless.com) to run Apollo GraphQL Server on AWS Lambda. Server fetches Hackernews API and make GraphQL endpoint to use it on the frontend.
