@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
-
 import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
@@ -37,10 +35,6 @@ class AppDocument extends Document {
         <Head>
           <meta charSet="utf-8" />
           <meta
-            name="viewport"
-            content="initial-scale=1.0, width=device-width"
-          />
-          <meta
             name="description"
             content="View jobs of the most actively hiring YC companies."
           />
@@ -48,6 +42,11 @@ class AppDocument extends Document {
           <link
             href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;700&display=swap"
             rel="stylesheet"
+          />
+          <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com/"
+            crossOrigin=""
           />
         </Head>
         <body>
