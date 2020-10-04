@@ -1,6 +1,6 @@
 {
   "name": "hackernews-jobs",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,11 +9,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "date-fns": "^2.16.1",
     "graphql-request": "^2.0.0",
-    "next": "^9.5.2",
+    "next": "^9.5.3",
     "prop-types": "^15.7.2",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "react": "^17.0.0-rc.2",
+    "react-dom": "^17.0.0-rc.2",
     "styled-components": "^5.1.1",
     "swr": "^0.3.1"
   },

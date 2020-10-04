@@ -1,5 +1,6 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import PropTypes from 'prop-types';
+import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
 
 import {
   ArticleWrapper,
@@ -7,7 +8,6 @@ import {
   ArticleMeta,
   ArticleMetaElement,
 } from '../styles/ArticleStyles';
-import mapTime from '../utils/mapTime';
 
 const Article = ({ title, url, by, time }) => {
   return url ? (
@@ -26,7 +26,7 @@ const Article = ({ title, url, by, time }) => {
 
         <span className="article__time" data-testid="article-time">
           <ArticleMetaElement>Posted: </ArticleMetaElement>
-          {mapTime(time)} ago
+          {formatDistanceToNowStrict(fromUnixTime(time))} ago
         </span>
       </ArticleMeta>
     </ArticleWrapper>

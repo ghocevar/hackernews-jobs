@@ -1,5 +1,3 @@
-import React from 'react';
-
 import HeaderWrapper from '../styles/HeaderStyles';
 
 const Header = () => {
