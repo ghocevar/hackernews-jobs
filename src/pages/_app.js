@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
 
-import React from 'react';
 import Head from 'next/head';
 import { ThemeProvider } from 'styled-components';
 
 import theme from '../styles/theme';
-import GlobalStyle from '../styles/globalStyles';
+import GlobalStyle from '../styles/GlobalStyles';
 
 const App = ({ Component, pageProps }) => {
   return (

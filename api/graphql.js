@@ -10,4 +10,9 @@ const server = new ApolloServer({
   dataSources: () => ({ hackernews: new HackerNewsAPI() }),
 });
 
-exports.graphqlHandler = server.createHandler();
+exports.graphqlHandler = server.createHandler({
+  cors: {
+    origin: '*',
+    credentials: true,
+  },
+});
