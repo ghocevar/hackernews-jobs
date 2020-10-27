@@ -45,9 +45,6 @@ const Home = ({ articles }) => {
   return (
     <ArticlesContainerWrapper data-test-id="articles-container">
       <Header />
-      <p className="description">
-        View jobs of the most actively hiring YC companies.
-      </p>
       {allArticles.map((article) =>
         article.url ? <Article key={article.id} {...article} /> : null
       )}

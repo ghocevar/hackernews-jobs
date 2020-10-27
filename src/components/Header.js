@@ -1,14 +1,16 @@
-import HeaderWrapper from '../styles/HeaderStyles';
+import styled from 'styled-components';
+
+import Logo from './Logo';
+
+const HeaderWrapper = styled.header``;
 
 const Header = () => {
   return (
     <HeaderWrapper>
-      <img
-        className="header__logo"
-        src="/ycombinator-logo.png"
-        alt="YCombinator Logo"
-      />
-      <h1 className="header__title">Hacker News Jobs</h1>
+      <nav>
+        <Logo />
+      </nav>
+      {/* <p>View jobs of the most actively hiring YC companies.</p> */}
     </HeaderWrapper>
   );
 };
