@@ -2,34 +2,27 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
 
-import {
-  ArticleWrapper,
-  ArticleTitle,
-  ArticleMeta,
-  ArticleMetaElement,
-} from '../styles/ArticleStyles';
-
 const Article = ({ title, url, by, time }) => {
   return url ? (
-    <ArticleWrapper>
-      <ArticleTitle>
+    <article>
+      <div>
         <a href={url} target="_blank" rel="noreferrer">
           {title}
         </a>
-      </ArticleTitle>
+      </div>
 
-      <ArticleMeta>
-        <span className="article__by" data-testid="article-by">
-          <ArticleMetaElement>By: </ArticleMetaElement>
+      <div>
+        <span data-testid="article-by">
+          <span>By: </span>
           {by}
         </span>
 
-        <span className="article__time" data-testid="article-time">
-          <ArticleMetaElement>Posted: </ArticleMetaElement>
+        <span data-testid="article-time">
+          <span>Posted: </span>
           {formatDistanceToNowStrict(fromUnixTime(time))} ago
         </span>
-      </ArticleMeta>
-    </ArticleWrapper>
+      </div>
+    </article>
   ) : null;
 };
 
