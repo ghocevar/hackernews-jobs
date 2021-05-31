@@ -1,19 +1,19 @@
 {
   "dependencies": {
-    "apollo-datasource-rest": "^0.9.3",
-    "apollo-server-lambda": "^2.16.1",
-    "graphql": "^15.3.0"
+    "apollo-datasource-rest": "^0.14.0",
+    "apollo-server-lambda": "^2.25.0",
+    "graphql": "^15.5.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.1",
-    "@babel/node": "^7.10.5",
-    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
-    "@babel/preset-env": "^7.11.0",
-    "babel-loader": "^8.1.0",
-    "serverless-offline": "^6.5.0",
-    "serverless-webpack": "^5.3.3",
-    "webpack": "^4.44.1",
-    "webpack-node-externals": "^2.5.1"
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.14.3",
+    "@babel/node": "^7.14.2",
+    "@babel/plugin-proposal-optional-chaining": "^7.14.2",
+    "@babel/preset-env": "^7.14.4",
+    "babel-loader": "^8.2.2",
+    "serverless-offline": "^7.0.0",
+    "serverless-webpack": "^5.5.0",
+    "webpack": "^5.38.1",
+    "webpack-node-externals": "^3.0.0"
   }
 }
