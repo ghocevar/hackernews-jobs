@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['plugin:react/recommended', 'airbnb', 'prettier', 'prettier/react'],
+  extends: ['plugin:react/recommended', 'airbnb', 'prettier'],
   env: {
     browser: true,
     commonjs: true,
@@ -7,7 +7,15 @@ module.exports = {
     jest: true,
     node: true,
   },
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    ecmaVersion: 12,
+    sourceType: 'module',
+    requireConfigFile: false,
+    babelOptions: {
+      presets: ['next/babel'],
+    },
+  },
   plugins: ['react', 'react-hooks', 'prettier'],
   rules: {
     'react/react-in-jsx-scope': 'off',
