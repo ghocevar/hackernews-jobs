@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import PropTypes from 'prop-types';
 import useSWR from 'swr';
 
@@ -5,7 +6,7 @@ import Header from '../components/Header';
 import Article from '../components/Article';
 
 import fetcher from '../utils/fetcher';
-import GET_ALL_ARTICLES from '../graphql/allArticles';
+import { GET_ALL_ARTICLES } from '../graphql/allArticles';
 
 export async function getStaticProps() {
   const articles = await fetcher(
@@ -41,12 +42,17 @@ const Home = ({ articles }) => {
   }
 
   return (
-    <main data-test-id="articles-container">
-      <Header />
-      {allArticles.map((article) =>
-        article.url ? <Article key={article.id} {...article} /> : null
-      )}
-    </main>
+    <>
+      <Head>
+        <title>Hacker News Jobs</title>
+      </Head>
+      <main data-test-id="articles-container">
+        <Header />
+        {allArticles.map(article =>
+          article.url ? <Article key={article.id} {...article} /> : null
+        )}
+      </main>
+    </>
   );
 };
 

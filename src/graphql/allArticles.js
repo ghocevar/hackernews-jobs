@@ -1,4 +1,4 @@
-export default `
+export const GET_ALL_ARTICLES = `
 {
   allArticles {
     id
