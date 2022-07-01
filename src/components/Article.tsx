@@ -1,7 +1,14 @@
 import { memo } from 'react';
 import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
 
-const Article = ({ title, url, by, time }) => {
+interface ArticleProps {
+  title: string;
+  url: string;
+  by: string;
+  time: number;
+}
+
+const Article: React.FC<ArticleProps> = ({ title, url, by, time }) => {
   return url ? (
     <article>
       <div>
