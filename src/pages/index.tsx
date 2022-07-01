@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import Head from 'next/head';
 import useSWR from 'swr';
 
@@ -6,7 +8,6 @@ import Article from '../components/Article';
 
 import fetcher from '../utils/fetcher';
 import { GET_ALL_ARTICLES } from '../graphql/allArticles';
-import { Suspense } from 'react';
 
 const Home = () => {
   const { data } = useSWR(
@@ -25,14 +26,16 @@ const Home = () => {
       <Head>
         <title>Hacker News Jobs</title>
       </Head>
-      <Suspense fallback={<div>Loading...</div>}>
-        <main data-test-id="articles-container">
-          <Header />
-          {data.allArticles.map(article =>
-            article.url ? <Article key={article.id} {...article} /> : null
-          )}
-        </main>
-      </Suspense>
+      <ErrorBoundary fallback={<h2>Sorry, something went wrong.</h2>}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <main data-test-id="articles-container">
+            <Header />
+            {data.allArticles.map(article =>
+              article.url ? <Article key={article.id} {...article} /> : null
+            )}
+          </main>
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 };
