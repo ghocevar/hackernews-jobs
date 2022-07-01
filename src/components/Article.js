@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
 
 const Article = ({ title, url, by, time }) => {
@@ -24,13 +23,6 @@ const Article = ({ title, url, by, time }) => {
       </div>
     </article>
   ) : null;
-};
-
-Article.propTypes = {
-  title: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired,
-  by: PropTypes.string.isRequired,
-  time: PropTypes.string.isRequired,
 };
 
 export default memo(Article);

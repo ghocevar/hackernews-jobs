@@ -1,7 +1,6 @@
+/**
+ * @type {import('next').NextConfig}
+ */
 module.exports = {
-  experimental: {
-    reactRoot: true,
-    concurrentFeatures: false,
-    serverComponents: false,
-  },
+  reactStrictMode: true,
 };
