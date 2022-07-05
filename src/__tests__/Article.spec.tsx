@@ -1,6 +1,6 @@
-import React from 'react';
 import { render, cleanup, waitFor } from '@testing-library/react';
 import Article from '../components/Article';
+import { singularArticle } from '../fixtures';
 import '@testing-library/jest-dom'
 
 beforeEach(cleanup)
@@ -8,22 +8,22 @@ beforeEach(cleanup)
 describe('renders the article component with content', () => {
   it('should render the component', async () => {
     const { getByText, getByTestId } = render(
-      <Article title="Test Job" url="https://google.com" by="ghocevar" time={1656936136} />
+      <Article {...singularArticle} />
     );
 
     await waitFor(() => [
-      expect(getByText('Test Job')).toBeVisible(),
+      expect(getByText('React Job')).toBeVisible(),
       expect(getByTestId('article-by').textContent).toEqual('By: ghocevar'),
     ]);
   })
   
   it('should not render the component', async () => {
     const { queryByText } = render(
-      <Article title="Test Job" url={undefined} by="ghocevar" time={1656936136} />
+      <Article {...singularArticle} url={undefined} />
     );
 
     await waitFor(() => [
-      expect(queryByText('Test Job')).toBeNull()
+      expect(queryByText('React Job')).toBeNull()
     ]);
   })
 });
