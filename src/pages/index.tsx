@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 import Head from 'next/head';
 import useSWR from 'swr';
 
@@ -26,16 +25,14 @@ const Home = () => {
       <Head>
         <title>Hacker News Jobs</title>
       </Head>
-      <ErrorBoundary fallback={<h2>Sorry, something went wrong.</h2>}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <main data-test-id="articles-container">
-            <Header />
-            {data.allArticles.map(article =>
-              article.url ? <Article key={article.id} {...article} /> : null
-            )}
-          </main>
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<div>Loading...</div>}>
+        <main data-test-id="articles-container">
+          <Header />
+          {data.allArticles.map(article =>
+            article.url ? <Article key={article.id} {...article} /> : null
+          )}
+        </main>
+      </Suspense>
     </>
   );
 };

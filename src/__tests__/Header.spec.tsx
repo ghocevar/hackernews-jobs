@@ -6,7 +6,7 @@ beforeEach(cleanup)
 
 describe('Header', () => {
 	it('renders a title', async () => {
-		const {getByText} = render(<Header />);
+		const { getByText } = render(<Header />);
 		expect(getByText('Jobs')).toBeVisible();
 	});
 });
