@@ -8,8 +8,16 @@ import Article from '../components/Article';
 import fetcher from '../utils/fetcher';
 import { GET_ALL_ARTICLES } from '../graphql/allArticles';
 
+interface IArticle {
+  id: number;
+  title: string;
+  url: string;
+  by: string;
+  time: number;
+}
+
 const Home = () => {
-  const { data } = useSWR(
+  const { data } = useSWR<{ allArticles: IArticle[] }>(
     [
       `https://os2ur82bcc.execute-api.eu-central-1.amazonaws.com/dev/graphql`,
       GET_ALL_ARTICLES,
@@ -28,7 +36,7 @@ const Home = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <main data-test-id="articles-container">
           <Header />
-          {data.allArticles.map(article =>
+          {data.allArticles.map((article: IArticle) =>
             article.url ? <Article key={article.id} {...article} /> : null
           )}
         </main>

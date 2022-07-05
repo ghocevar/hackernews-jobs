@@ -1,22 +1,22 @@
-import { render, waitFor } from '@testing-library/react'
-import Home from '../pages/index'
-import fetcher from '../utils/fetcher'
-import { allArticles } from '../fixtures'
-import '@testing-library/jest-dom'
+import { render, waitFor } from '@testing-library/react';
+import Home from '../pages/index';
+import fetcher from '../utils/fetcher';
+import { allArticles } from '../fixtures';
+import '@testing-library/jest-dom';
 
-jest.mock('../utils/fetcher.ts')
+jest.mock('../utils/fetcher.ts');
 
-const fetcherMock = fetcher as jest.MockedFunction<typeof fetcher>
+const fetcherMock = fetcher as jest.MockedFunction<typeof fetcher>;
 
 describe('Home', () => {
-  fetcherMock.mockImplementation(() => Promise.resolve({ allArticles }))
-  
+  fetcherMock.mockImplementation(() => Promise.resolve({ allArticles }));
+
   it('render a home page', async () => {
-    const { getByText, getByTestId } = render(<Home />)
+    const { getByText, getByTestId } = render(<Home />);
     await waitFor(() => [
-        expect(getByText('Jobs')).toBeTruthy(),
-        expect(getByText('React Job')).toBeVisible(),
-        expect(getByTestId('article-by').textContent).toEqual('By: ghocevar'),
-    ])
-  })
-})
+      expect(getByText('Jobs')).toBeTruthy(),
+      expect(getByText('React Job')).toBeVisible(),
+      expect(getByTestId('article-by').textContent).toEqual('By: ghocevar'),
+    ]);
+  });
+});

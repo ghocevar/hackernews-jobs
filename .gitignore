@@ -31,4 +31,9 @@ yarn-error.log*
 
 # webstrom
 .idea
+
+# vercel
 .vercel
+
+# swc
+.swc
