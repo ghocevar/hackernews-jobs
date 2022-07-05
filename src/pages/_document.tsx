@@ -3,7 +3,10 @@ import { Html, Head, Main, NextScript } from 'next/document';
 const Document = () => (
   <Html lang="en">
     <Head>
-      <meta name="description" content="Meta description content goes here." />
+      <meta
+        name="description"
+        content="Job Stories Feed from Hacker News API."
+      />
     </Head>
     <body>
       <Main />
