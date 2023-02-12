@@ -5,12 +5,6 @@ resource "google_artifact_registry_repository" "repository" {
   format        = "DOCKER"
 }
 
-resource "google_project_service" "run_api" {
-  service = "run.googleapis.com"
-
-  disable_on_destroy = true
-}
-
 resource "google_cloud_run_service" "main" {
   name     = "hackernews-jobs-api-main"
   location = "europe-west8"
@@ -22,8 +16,6 @@ resource "google_cloud_run_service" "main" {
       }
     }
   }
-
-  depends_on = [google_project_service.run_api]
 }
 
 data "google_iam_policy" "noauth" {
@@ -41,6 +33,6 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   service  = google_cloud_run_service.main.name
 
   policy_data = data.google_iam_policy.noauth.policy_data
-  
+
   depends_on  = [google_cloud_run_service.main]
 }
