@@ -12,7 +12,7 @@ resource "google_cloud_run_service" "main" {
   template {
     spec {
       containers {
-        image = "europe-west8-docker.pkg.dev/hackernews-jobs/hackernews-jobs-repository/main.go-7ddfb3e035b42cd70649cc33393fe32c"
+        image = "europe-west8-docker.pkg.dev/hackernews-jobs/hackernews-jobs-repository/main.go-7ddfb3e035b42cd70649cc33393fe32c@sha256:fc07d1be4b49e3544fb93baaa6d437f228a154178d75f6a692c46b9ffac3c60d"
       }
     }
   }
