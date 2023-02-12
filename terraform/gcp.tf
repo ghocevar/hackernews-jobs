@@ -25,16 +25,6 @@ resource "google_cloud_run_service" "main" {
 
   depends_on = [google_project_service.run_api]
 }
-
-data "google_iam_policy" "noauth" {
-  binding {
-    role = "roles/run.invoker"
-    members = [
-      "allUsers",
-    ]
-  }
-}
-
 resource "google_cloud_run_service_iam_member" "noauth" {
   service  = google_cloud_run_service.main.name
   location = google_cloud_run_service.main.location
