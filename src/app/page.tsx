@@ -1,7 +1,5 @@
-import { Suspense } from 'react';
 import Article from '../components/Article';
 import { IArticle } from '../interfaces/IArticle';
-import Loading from './loading';
 
 const getArticles = async () => {
   const res = await fetch('http://localhost:8000', {
