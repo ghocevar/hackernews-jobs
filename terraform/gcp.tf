@@ -35,9 +35,9 @@ data "google_iam_policy" "noauth" {
   }
 }
 
-resource "google_cloud_run_service_iam_member" "run_all_users" {
-  service  = google_cloud_run_service.run_service.name
-  location = google_cloud_run_service.run_service.location
+resource "google_cloud_run_service_iam_member" "noauth" {
+  service  = google_cloud_run_service.main.name
+  location = google_cloud_run_service.main.location
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
