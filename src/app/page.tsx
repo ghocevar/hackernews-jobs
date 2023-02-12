@@ -1,17 +1,18 @@
+import { Suspense } from 'react';
 import Article from '../components/Article';
-
-import fetcher from '../utils/fetcher';
-import GET_ALL_ARTICLES from '../graphql/allArticles';
-
 import { IArticle } from '../interfaces/IArticle';
+import Loading from './loading';
 
 const getArticles = async () => {
-  const { allArticles }: { allArticles: IArticle[] } = await fetcher(
-    `https://os2ur82bcc.execute-api.eu-central-1.amazonaws.com/dev/graphql`,
-    GET_ALL_ARTICLES
-  );
+  const res = await fetch('http://localhost:8000', {
+    cache: 'no-cache',
+  });
 
-  return allArticles;
+  if (!res.ok) {
+    throw new Error('Unable to fetch articles');
+  }
+
+  return res.json();
 };
 
 const Home = async () => {
@@ -19,10 +20,8 @@ const Home = async () => {
 
   return (
     <>
-      <p className="description">
-        View jobs of the most actively hiring YC companies.
-      </p>
-      {articles.map((article) => (
+      <p>View jobs of the most actively hiring YC companies.</p>
+      {articles.map((article: IArticle) => (
         <Article key={article.id} {...article} />
       ))}
     </>

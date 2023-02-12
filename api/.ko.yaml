@@ -1,0 +1,9 @@
+builds:
+  - id: main
+    dir: .
+    main: ./main
+    env:
+      - KO_DOCKER_REPO=ko.local
+    ldflags:
+      - -s -w
+      - -extldflags "-static"
