@@ -32,5 +32,7 @@ yarn-error.log*
 # vscode
 .vscode
 
+.idea
+
 # terraform
 .terraform

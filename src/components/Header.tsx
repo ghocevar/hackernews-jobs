@@ -2,7 +2,7 @@ const Header: React.FC = () => {
   return (
     <header>
       <nav>
-        <h1>Jobs</h1>
+        <h1>Hacker News Jobs</h1>
       </nav>
     </header>
   );
