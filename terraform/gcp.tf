@@ -8,13 +8,7 @@ resource "google_artifact_registry_repository" "repository" {
 resource "google_cloud_run_service" "main" {
   name     = "hackernews-jobs-api-main"
   location = "europe-west8"
-
-  metadata {
-    annotations = {
-      "run.googleapis.com/launch-stage" = "BETA"
-    }
-  }
-
+  
   template {
     spec {
       containers {
