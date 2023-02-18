@@ -3,7 +3,7 @@ import { IArticle } from '../interfaces/IArticle';
 
 const getArticles = async () => {
   const res = await fetch(process.env.API_URL!, {
-    cache: 'no-cache',
+    cache: 'no-store',
   });
 
   if (!res.ok) {
