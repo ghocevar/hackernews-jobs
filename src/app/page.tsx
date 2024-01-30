@@ -1,9 +1,13 @@
-import Article from '../components/Article';
-import { IArticle } from '../interfaces/IArticle';
+import ArticlesContainer from '../containers/ArticlesContainer';
+
+const { API_URL } = process.env;
+
+const HOUR = 60 * 60;
+export const revalidate = 1 * HOUR;
 
 const getArticles = async () => {
-  const res = await fetch(process.env.API_URL!, {
-    cache: 'no-store',
+  const res = await fetch(API_URL, {
+    cache: 'no-cache',
   });
 
   if (!res.ok) {
@@ -19,9 +23,7 @@ const Home = async () => {
   return (
     <>
       <p>View jobs of the most actively hiring YC companies.</p>
-      {articles.map((article: IArticle) => (
-        <Article key={article.id} {...article} />
-      ))}
+      <ArticlesContainer articles={articles} />
     </>
   );
 };
