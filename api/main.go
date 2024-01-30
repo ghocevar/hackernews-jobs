@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"sync"
+
+	"github.com/rs/cors"
 )
 
 type Story struct {
@@ -74,10 +76,10 @@ func getStories(storiesIDs []int) ([]Story, error) {
 	return stories, nil
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func storiesHandler(w http.ResponseWriter, r *http.Request) {
 	storiesIDs, err := getStoriesIDs()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Internal Server Error"))
 		return
@@ -85,7 +87,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	stories, err := getStories(storiesIDs)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Internal Server Error"))
 		return
@@ -93,7 +95,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	bytes, err := json.Marshal(stories)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Internal Server Error"))
 		return
@@ -105,7 +107,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", handler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", storiesHandler)
 
-	log.Fatalln(http.ListenAndServe(":8080", nil))
+	handler := cors.Default().Handler(mux)
+	log.Fatalln(http.ListenAndServe(":8080", handler))
 }
