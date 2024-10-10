@@ -1,0 +1,9 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: hackernews-jobs-api-canary
+spec:
+  template:
+    spec:
+      containers:
+        - image: europe-west8-docker.pkg.dev/hackernews-jobs/hackernews-jobs-repository/main.go-7ddfb3e035b42cd70649cc33393fe32c

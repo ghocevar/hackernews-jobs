@@ -106,6 +106,5 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", handler)
-
 	log.Fatalln(http.ListenAndServe(":8080", nil))
 }

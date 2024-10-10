@@ -1,0 +1,31 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: hackernews-jobs-api-canary
+build:
+  artifacts:
+    - image: europe-west8-docker.pkg.dev/hackernews-jobs/hackernews-jobs-repository/main.go
+      ko: {}
+
+manifests:
+  rawYaml:
+    - k8s/*.yaml
+
+deploy:
+  cloudrun:
+    projectid: hackernews-jobs
+    region: europe-west8
+
+# profiles:
+#   - name: development
+#     activation:
+#       - command: dev
+#     build:
+#       local:
+#         push: false
+
+portForward:
+  - resourceType: deployment
+    resourceName: hackernews-jobs-api-canary
+    port: 8080
+    localPort: 8080
