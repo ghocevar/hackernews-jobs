@@ -1,7 +1,10 @@
+import { api } from "@/trpc/server";
+
 export default async function Home() {
+  const result = await api.post.hello({ text: "users" });
   return (
     <>
-      <h1>Hacker News Jobs</h1>
+      <p>{result.greeting}</p>
     </>
   );
 }

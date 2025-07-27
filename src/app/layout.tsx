@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { PropsWithChildren } from "react";
+import Header from "@/components/header";
 
 export const metadata: Metadata = {
   title: "Hacker News Jobs",
@@ -11,7 +12,10 @@ type RootLayoutProps = PropsWithChildren;
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Header />
+        {children}
+      </body>
     </html>
   );
 }
