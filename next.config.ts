@@ -1,4 +1,3 @@
-import { nextFusePlugin } from "fuse/next/plugin";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -7,11 +6,6 @@ const nextConfig: NextConfig = {
     cacheComponents: true,
     ppr: true,
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 };
 
-export default nextFusePlugin()({
-  ...nextConfig,
-});
+export default nextConfig;

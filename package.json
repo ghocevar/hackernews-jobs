@@ -9,25 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "fuse": "^0.12.1",
-    "gql.tada": "^1.8.12",
-    "graphql": "^16.11.0",
     "next": "15.4.2-canary.18",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "@0no-co/graphqlsp": "^1.14.0",
-    "@graphql-typed-document-node/core": "^3.2.0",
     "@types/node": "22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "^19.1.0-rc.2",
     "typescript": "^5"
   },
-  "trustedDependencies": [
-    "@parcel/watcher",
-    "aws-sdk"
-  ],
   "packageManager": "npm@11.4.2+sha512.f90c1ec8b207b625d6edb6693aef23dacb39c38e4217fe8c46a973f119cab392ac0de23fe3f07e583188dae9fd9108b3845ad6f525b598742bd060ebad60bff3"
 }
