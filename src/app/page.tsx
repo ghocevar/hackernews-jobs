@@ -1,22 +1,30 @@
 import { graphql } from "@/fuse";
 import { execute } from "@/fuse/server";
 
-export default async function Home() {
-  const result = await execute({ query: VersionQuery });
+const UserQuery = graphql(`
+  query User($id: ID!) {
+    user(id: $id) {
+      id
+      name
+      firstName
+    }
+  }
+`);
 
-  if (result.errors) {
-    throw new Error("Something went wrong");
+export default async function Home() {
+  const result = await execute({ query: UserQuery, variables: { id: "123" } });
+
+  if (!result.data?.user) {
   }
 
   return (
     <>
-      <p>fuse version: {result.data?._version}</p>
+      <p>fuse test</p>
+      <div>User</div>
+      <ul>
+        <li>Name: {result.data?.user?.name}</li>
+        <li>First Name: {result.data?.user?.firstName}</li>
+      </ul>
     </>
   );
 }
-
-const VersionQuery = graphql(`
-  query Version {
-    _version
-  }
-`);

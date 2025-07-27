@@ -42,6 +42,10 @@ const introspection = {
       },
       {
         "kind": "SCALAR",
+        "name": "ID"
+      },
+      {
+        "kind": "SCALAR",
         "name": "JSON"
       },
       {
@@ -64,6 +68,31 @@ const introspection = {
         "interfaces": []
       },
       {
+        "kind": "INTERFACE",
+        "name": "Node",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID"
+              }
+            },
+            "args": [],
+            "isDeprecated": false
+          }
+        ],
+        "interfaces": [],
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "User"
+          }
+        ]
+      },
+      {
         "kind": "OBJECT",
         "name": "Query",
         "fields": [
@@ -78,6 +107,78 @@ const introspection = {
             },
             "args": [],
             "isDeprecated": false
+          },
+          {
+            "name": "node",
+            "type": {
+              "kind": "INTERFACE",
+              "name": "Node"
+            },
+            "args": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                }
+              }
+            ],
+            "isDeprecated": false
+          },
+          {
+            "name": "nodes",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "INTERFACE",
+                  "name": "Node"
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "ids",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "LIST",
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID"
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "isDeprecated": false
+          },
+          {
+            "name": "user",
+            "type": {
+              "kind": "OBJECT",
+              "name": "User"
+            },
+            "args": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID"
+                  }
+                }
+              }
+            ],
+            "isDeprecated": false
           }
         ],
         "interfaces": []
@@ -85,6 +186,57 @@ const introspection = {
       {
         "kind": "SCALAR",
         "name": "String"
+      },
+      {
+        "kind": "OBJECT",
+        "name": "User",
+        "fields": [
+          {
+            "name": "avatarUrl",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": [],
+            "isDeprecated": false
+          },
+          {
+            "name": "firstName",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": [],
+            "isDeprecated": false
+          },
+          {
+            "name": "id",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID"
+              }
+            },
+            "args": [],
+            "isDeprecated": false
+          },
+          {
+            "name": "name",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            },
+            "args": [],
+            "isDeprecated": false
+          }
+        ],
+        "interfaces": [
+          {
+            "kind": "INTERFACE",
+            "name": "Node"
+          }
+        ]
       }
     ],
     "directives": []

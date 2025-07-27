@@ -12,6 +12,20 @@ type Mutation {
   _version: String!
 }
 
+interface Node {
+  id: ID!
+}
+
 type Query {
   _version: String!
+  node(id: ID!): Node
+  nodes(ids: [ID!]!): [Node]!
+  user(id: ID!): User
+}
+
+type User implements Node {
+  avatarUrl: String
+  firstName: String
+  id: ID!
+  name: String
 }
