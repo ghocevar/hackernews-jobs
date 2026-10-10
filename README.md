@@ -9,7 +9,7 @@ This branch runs locally. Cloud Run and the Terraform config are gone. Deploying
 | Tool | Version |
 | --- | --- |
 | Node.js | 24.21.0 (Active LTS) |
-| pnpm | 10.33.4 |
+| pnpm | 12.11.2 |
 | Go | 1.27.2 |
 | Next.js | 16.4.0 |
 | React | 19.3.0 |
