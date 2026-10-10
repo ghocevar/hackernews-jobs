@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import ArticlesContainer from '../containers/ArticlesContainer';
+import ArticleCard from '../components/Article';
 import type { Article } from '../interfaces/Article';
 
 export const dynamic = 'force-dynamic';
@@ -20,7 +20,7 @@ async function storiesURL(): Promise<string> {
 }
 
 async function getArticles(): Promise<Article[]> {
-  const res = await fetch(await storiesURL(), { cache: 'no-store' });
+  const res = await fetch(await storiesURL(), { next: { revalidate: 300 } });
   if (!res.ok) {
     throw new Error('Unable to fetch articles');
   }
@@ -33,7 +33,15 @@ export default async function Home() {
   return (
     <>
       <p className="lede">View jobs of the most actively hiring YC companies.</p>
-      <ArticlesContainer articles={articles} />
+      {articles.length === 0 ? (
+        <p className="empty">No job stories right now.</p>
+      ) : (
+        <div className="jobs">
+          {articles.map((article) => (
+            <ArticleCard key={article.id} {...article} />
+          ))}
+        </div>
+      )}
     </>
   );
 }

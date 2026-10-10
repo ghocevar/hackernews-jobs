@@ -14,8 +14,9 @@ import (
 
 const (
 	defaultBaseURL   = "https://hacker-news.firebaseio.com"
-	defaultWorkers   = 8
+	defaultWorkers   = 32
 	maxResponseBytes = 4 << 20
+	defaultCacheTTL  = 5 * time.Minute
 	userAgent        = "hackernews-jobs (+https://github.com/ghocevar/hackernews-jobs)"
 )
 
@@ -31,10 +32,18 @@ type Story struct {
 }
 
 // Client loads job stories from the Hacker News Firebase API.
+// A positive CacheTTL keeps the assembled list in memory so a request does
+// not repeat the per-item reads. A negative CacheTTL disables that cache.
 type Client struct {
 	BaseURL    string
 	HTTP       *http.Client
 	MaxWorkers int
+	CacheTTL   time.Duration
+
+	mu          sync.Mutex
+	cached      []Story
+	cachedUntil time.Time
+	loading     chan struct{}
 }
 
 func NewClient() *Client {
@@ -44,6 +53,7 @@ func NewClient() *Client {
 			Timeout: 20 * time.Second,
 		},
 		MaxWorkers: defaultWorkers,
+		CacheTTL:   defaultCacheTTL,
 	}
 }
 
@@ -64,7 +74,78 @@ func (c *Client) httpClient() *http.Client {
 // JobStories returns the current official job stories in Firebase order.
 // Items that fail to load are omitted. A failure to load the id list, or a
 // list whose items all fail, is returned as an error.
+// Repeated calls within CacheTTL share one upstream load.
 func (c *Client) JobStories(ctx context.Context) ([]Story, error) {
+	if stories, ok := c.fromCache(); ok {
+		return stories, nil
+	}
+
+	c.mu.Lock()
+	if stories, ok := c.fromCacheLocked(); ok {
+		c.mu.Unlock()
+		return stories, nil
+	}
+	if c.loading != nil {
+		wait := c.loading
+		c.mu.Unlock()
+		select {
+		case <-wait:
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
+		return c.JobStories(ctx)
+	}
+	wait := make(chan struct{})
+	c.loading = wait
+	c.mu.Unlock()
+
+	stories, err := c.loadJobStories(ctx)
+
+	c.mu.Lock()
+	if err == nil && c.ttl() > 0 {
+		c.cached = cloneStories(stories)
+		c.cachedUntil = time.Now().Add(c.ttl())
+	}
+	c.loading = nil
+	close(wait)
+	c.mu.Unlock()
+
+	if err != nil {
+		return nil, err
+	}
+	return cloneStories(stories), nil
+}
+
+func (c *Client) ttl() time.Duration {
+	if c.CacheTTL < 0 {
+		return 0
+	}
+	if c.CacheTTL == 0 {
+		return defaultCacheTTL
+	}
+	return c.CacheTTL
+}
+
+func (c *Client) fromCache() ([]Story, bool) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.fromCacheLocked()
+}
+
+func (c *Client) fromCacheLocked() ([]Story, bool) {
+	if c.ttl() == 0 || time.Now().After(c.cachedUntil) || c.cached == nil {
+		return nil, false
+	}
+	return cloneStories(c.cached), true
+}
+
+func cloneStories(in []Story) []Story {
+	out := make([]Story, len(in))
+	copy(out, in)
+	return out
+}
+
+func (c *Client) loadJobStories(ctx context.Context) ([]Story, error) {
 	ids, err := c.storyIDs(ctx)
 	if err != nil {
 		return nil, err
@@ -163,9 +244,11 @@ func (c *Client) getJSON(ctx context.Context, path string, dest any) error {
 	return nil
 }
 
+var sharedClient = NewClient()
+
 // Handler serves GET /api/stories for the local server and the Vercel function.
 func Handler(w http.ResponseWriter, r *http.Request) {
-	NewHandler(nil).ServeHTTP(w, r)
+	NewHandler(sharedClient).ServeHTTP(w, r)
 }
 
 func NewHandler(client *Client) http.Handler {
@@ -187,6 +270,7 @@ func NewHandler(client *Client) http.Handler {
 			return
 		}
 
+		started := time.Now()
 		stories, err := client.JobStories(r.Context())
 		if err != nil {
 			log.Printf("job stories: %v", err)
@@ -194,6 +278,8 @@ func NewHandler(client *Client) http.Handler {
 			return
 		}
 
+		w.Header().Set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=3600")
+		w.Header().Set("Server-Timing", fmt.Sprintf("app;dur=%.1f", time.Since(started).Seconds()*1000))
 		writeJSON(w, http.StatusOK, stories)
 	})
 }

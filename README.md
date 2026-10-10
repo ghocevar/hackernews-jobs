@@ -1,6 +1,6 @@
 # hackernews-jobs
 
-Lists the official Hacker News job stories: the YC hiring posts from [`jobstories.json`](https://hacker-news.firebaseio.com/v0/jobstories.json). The Next.js app and the Go API deploy as one Vercel project. The page and the browser both call `/api/stories` on the same origin.
+Lists the official Hacker News job stories: the YC hiring posts from [`jobstories.json`](https://hacker-news.firebaseio.com/v0/jobstories.json). The Next.js app and the Go API deploy as one Vercel project. The page server-renders `/api/stories` on the same origin. The browser does not refetch the list.
 
 ## Toolchain
 
@@ -22,7 +22,9 @@ pnpm install
 pnpm dev
 ```
 
-`pnpm dev` starts the Go API on port 8080 and the Next.js app on port 3000. Next.js proxies `/api/stories` to the Go process. Open [http://localhost:3000](http://localhost:3000).
+`pnpm dev` starts the Go API on port 8080 and the Next.js app on port 3000. Next.js proxies `/api/stories` to the Go process. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list.
+
+The API remembers that list for 5 minutes. A repeat view does not read every Firebase item again.
 
 ## Checks
 

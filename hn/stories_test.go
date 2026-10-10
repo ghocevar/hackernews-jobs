@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestJobStoriesPreservesOrderAndText(t *testing.T) {
@@ -91,6 +92,12 @@ func TestHandlerReturnsStories(t *testing.T) {
 	if got := rec.Header().Get("Access-Control-Allow-Origin"); got != "*" {
 		t.Fatalf("cors = %s", got)
 	}
+	if got := rec.Header().Get("Cache-Control"); !strings.Contains(got, "s-maxage=300") {
+		t.Fatalf("cache-control = %s", got)
+	}
+	if rec.Header().Get("Server-Timing") == "" {
+		t.Fatal("missing Server-Timing")
+	}
 
 	var stories []Story
 	if err := json.Unmarshal(rec.Body.Bytes(), &stories); err != nil {
@@ -143,5 +150,42 @@ func newFixtureClient(t *testing.T, items map[int]Story, ids []int) *Client {
 		BaseURL:    server.URL,
 		HTTP:       server.Client(),
 		MaxWorkers: 2,
+		CacheTTL:   -1,
+	}
+}
+
+func TestJobStoriesCachesTheList(t *testing.T) {
+	hits := 0
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if r.URL.Path == "/v0/jobstories.json" {
+			hits++
+			_ = json.NewEncoder(w).Encode([]int{7})
+			return
+		}
+		_ = json.NewEncoder(w).Encode(Story{By: "ada", ID: 7, Time: 1700000000, Title: "Hiring", Type: "job"})
+	}))
+	t.Cleanup(server.Close)
+
+	client := &Client{
+		BaseURL:    server.URL,
+		HTTP:       server.Client(),
+		MaxWorkers: 2,
+		CacheTTL:   time.Hour,
+	}
+
+	first, err := client.JobStories(t.Context())
+	if err != nil {
+		t.Fatalf("first: %v", err)
+	}
+	second, err := client.JobStories(t.Context())
+	if err != nil {
+		t.Fatalf("second: %v", err)
+	}
+	if hits != 1 {
+		t.Fatalf("upstream id fetches = %d, want 1", hits)
+	}
+	if len(first) != 1 || len(second) != 1 || second[0].Title != "Hiring" {
+		t.Fatalf("stories = %+v %+v", first, second)
 	}
 }
