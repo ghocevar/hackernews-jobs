@@ -21,8 +21,9 @@ function decodeEntity(entity: string): string {
 
 export function plainText(html: string): string {
   const withoutTags = html.replace(/<[^>]*>/g, ' ');
-  const decoded = withoutTags.replace(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g, (_, entity: string) =>
-    decodeEntity(entity)
+  const decoded = withoutTags.replace(
+    /&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g,
+    (_, entity: string) => decodeEntity(entity)
   );
   return decoded.replace(/\s+/g, ' ').trim();
 }

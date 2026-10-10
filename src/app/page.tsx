@@ -32,7 +32,9 @@ export default async function Home() {
 
   return (
     <>
-      <p className="lede">View jobs of the most actively hiring YC companies.</p>
+      <p className="lede">
+        View jobs of the most actively hiring YC companies.
+      </p>
       {articles.length === 0 ? (
         <p className="empty">No job stories right now.</p>
       ) : (
