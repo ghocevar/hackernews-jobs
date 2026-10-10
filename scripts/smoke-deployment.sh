@@ -30,13 +30,14 @@ echo "Smoking ${url}/"
 code="$(curl -fsS -o /tmp/hn-page.html -w '%{http_code}' --max-time 30 "${url}/")"
 
 python3 - "$code" <<'PY'
+import html as html_lib
 import json
 import sys
 import urllib.request
 from pathlib import Path
 
 code = sys.argv[1]
-html = Path("/tmp/hn-page.html").read_text(errors="replace")
+html = html_lib.unescape(Path("/tmp/hn-page.html").read_text(errors="replace"))
 base = "https://hacker-news.firebaseio.com"
 
 def get_json(path: str):
