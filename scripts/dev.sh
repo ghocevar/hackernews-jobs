@@ -9,7 +9,7 @@ if ! command -v go >/dev/null 2>&1; then
   exit 1
 fi
 
-go run -C api . &
+go run ./cmd/local &
 api_pid=$!
 
 cleanup() {

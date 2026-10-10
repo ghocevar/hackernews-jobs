@@ -1,10 +1,11 @@
-package main
+package hn
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"sync"
@@ -160,4 +161,51 @@ func (c *Client) getJSON(ctx context.Context, path string, dest any) error {
 		return fmt.Errorf("hacker news %s: %w", path, err)
 	}
 	return nil
+}
+
+// Handler serves GET /api/stories for the local server and the Vercel function.
+func Handler(w http.ResponseWriter, r *http.Request) {
+	NewHandler(nil).ServeHTTP(w, r)
+}
+
+func NewHandler(client *Client) http.Handler {
+	if client == nil {
+		client = NewClient()
+	}
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		if r.Method != http.MethodGet {
+			writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+			return
+		}
+
+		stories, err := client.JobStories(r.Context())
+		if err != nil {
+			log.Printf("job stories: %v", err)
+			writeError(w, http.StatusBadGateway, "unable to load job stories")
+			return
+		}
+
+		writeJSON(w, http.StatusOK, stories)
+	})
+}
+
+func writeJSON(w http.ResponseWriter, status int, body any) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(status)
+	if err := json.NewEncoder(w).Encode(body); err != nil {
+		log.Printf("write response: %v", err)
+	}
+}
+
+func writeError(w http.ResponseWriter, status int, message string) {
+	writeJSON(w, status, map[string]string{"error": message})
 }
