@@ -1,11 +1,10 @@
-const Header: React.FC = () => {
+export default function Header() {
   return (
-    <header>
-      <nav>
-        <h1>Hacker News Jobs</h1>
-      </nav>
+    <header className="site-header">
+      <a className="brand" href="/">
+        <img src="/ycombinator-logo.png" alt="" width={28} height={28} />
+        <span>Hacker News Jobs</span>
+      </a>
     </header>
   );
-};
-
-export default Header;
+}

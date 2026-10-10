@@ -34,5 +34,5 @@ yarn-error.log*
 
 .idea
 
-# terraform
-.terraform
+# go
+api/api

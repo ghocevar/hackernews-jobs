@@ -1,26 +1,20 @@
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import Header from '../components/Header';
+import '../styles/globals.css';
 
-interface LayoutProps {
-  children: React.ReactNode;
+export const metadata: Metadata = {
+  title: 'Hacker News Jobs',
+  description: 'View jobs of the most actively hiring YC companies.',
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <Header />
+        <main className="page">{children}</main>
+      </body>
+    </html>
+  );
 }
-
-const Layout: React.FC<LayoutProps> = ({ children }) => (
-  <html lang="en">
-    <head>
-      <meta charSet="utf-8" />
-      <meta
-        name="description"
-        content="View jobs of the most actively hiring YC companies."
-      />
-      <link rel="icon" href="/favicon.ico" />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      <title>Hacker News Jobs</title>
-    </head>
-    <body>
-      <Header />
-      {children}
-    </body>
-  </html>
-);
-
-export default Layout;

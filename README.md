@@ -1,41 +1,42 @@
 # hackernews-jobs
 
-This is simple Full-stack application that uses Next.js on the frontend and Golang on the backend side. Backend fetches job stories from Hacker News API, and creates simple API endpoint to fetch job postings. 
+Lists the official Hacker News job stories: the YC hiring posts from [`jobstories.json`](https://hacker-news.firebaseio.com/v0/jobstories.json). The Next.js app renders that list. A small Go API reads the stories, including posts that have text and no URL.
 
-Next.js app is deployed on Vercel and Golang backend app on the Cloud Run.
+This branch runs locally. Cloud Run and the Terraform config are gone. Deploying the site and the API together on Vercel comes next.
 
-## TODO
+## Toolchain
 
-There are some tasks in want to complete, to imporove the performace especially on the backend and data fetching.
+| Tool | Version |
+| --- | --- |
+| Node.js | 24.21.0 (Active LTS) |
+| pnpm | 10.33.4 |
+| Go | 1.27.2 |
+| Next.js | 16.4.0 |
+| React | 19.3.0 |
+| TypeScript | 7.0.2 |
 
-- [ ] Create CI/CD pipelint with GitHub Actions
-- [ ] Add Redis (or some cache store) and to store job postings for faster API response times
-- [ ] Redesign frontend application
-- [ ] Add Vercel provider to Terraform
+## Running locally
 
-##### Folder structure
-
-```bash
-hackernews-jobs/
-├── api        # API Server in Go
-├── public     # Public files used on the frontend
-├── src        # Next.js frontend application
-```
-
-## Running Locally
-
-You can checkout project locally by cloning the repo:
+No environment variables are required.
 
 ```bash
-git clone https://github.com/ghocevar/hackernews-jobs.git
-cd hackernews-jobs
-echo 'API_URL="https://hackernews-jobs-api-main-cfoxkmtliq-oc.a.run.app"' > .env.local
 pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`pnpm dev` starts the Go API on port 8080 and the Next.js app on port 3000. Open [http://localhost:3000](http://localhost:3000).
+
+Optional: set `API_URL` if the server should read jobs from somewhere other than `http://127.0.0.1:8080`. Set `NEXT_PUBLIC_API_URL` only if the browser should refetch that URL itself. Leave both unset for the default local app.
+
+## Checks
+
+```bash
+pnpm test
+pnpm build
+```
+
+`pnpm test` runs the Go API tests. `pnpm build` builds the Next.js app. GitHub Actions runs both.
 
 ### Previous version
 
-Originaly, this project was built following tutorial by [Karl Hawden](https://github.com/karlhadwen) building [Hackernews Clone](https://www.youtube.com/watch?v=7DLRJj1YjvQ&t=7044s) with some minimal modifications, like use of Next.js. Backend was built with [Serverless Framework](https://serverless.com) to run Apollo GraphQL Server on AWS Lambda. You can see the code on the [master branch](https://github.com/ghocevar/hackernews-jobs/tree/master).
+Originally this project followed a [Hacker News clone tutorial](https://www.youtube.com/watch?v=7DLRJj1YjvQ&t=7044s) by Karl Hadwen, with a Serverless Framework GraphQL API. That code is on the [master branch](https://github.com/ghocevar/hackernews-jobs/tree/master).
