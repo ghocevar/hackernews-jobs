@@ -1,31 +1,28 @@
 import ArticlesContainer from '../containers/ArticlesContainer';
+import type { Article } from '../interfaces/Article';
 
-const { API_URL } = process.env;
+export const dynamic = 'force-dynamic';
 
-const HOUR = 60 * 60;
-export const revalidate = 1 * HOUR;
+function apiURL(): string {
+  const configured = process.env.API_URL?.trim();
+  return configured ? configured : 'http://127.0.0.1:8080';
+}
 
-const getArticles = async () => {
-  const res = await fetch(API_URL, {
-    cache: 'no-cache',
-  });
-
+async function getArticles(): Promise<Article[]> {
+  const res = await fetch(apiURL(), { cache: 'no-store' });
   if (!res.ok) {
     throw new Error('Unable to fetch articles');
   }
+  return res.json() as Promise<Article[]>;
+}
 
-  return res.json();
-};
-
-const Home = async () => {
+export default async function Home() {
   const articles = await getArticles();
 
   return (
     <>
-      <p>View jobs of the most actively hiring YC companies.</p>
+      <p className="lede">View jobs of the most actively hiring YC companies.</p>
       <ArticlesContainer articles={articles} />
     </>
   );
-};
-
-export default Home;
+}

@@ -1,3 +1,3 @@
-const Loading = () => <p>Loading jobs...</p>;
-
-export default Loading;
+export default function Loading() {
+  return <p className="empty">Loading jobs…</p>;
+}

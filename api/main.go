@@ -2,110 +2,63 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"log"
 	"net/http"
-	"sync"
+	"time"
 )
 
-type Story struct {
-	By    string `json:"by"`
-	ID    int    `json:"id"`
-	Time  int    `json:"time"`
-	Title string `json:"title"`
-	Type  string `json:"type"`
-	URL   string `json:"url"`
+func NewHandler(client *Client) http.Handler {
+	if client == nil {
+		client = NewClient()
+	}
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		if r.Method != http.MethodGet {
+			writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+			return
+		}
+
+		stories, err := client.JobStories(r.Context())
+		if err != nil {
+			log.Printf("job stories: %v", err)
+			writeError(w, http.StatusBadGateway, "unable to load job stories")
+			return
+		}
+
+		writeJSON(w, http.StatusOK, stories)
+	})
 }
 
-func getStoriesIDs() ([]int, error) {
-	res, err := http.Get("https://hacker-news.firebaseio.com/v0/jobstories.json")
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-
-	var storiesIDs []int
-	if err = json.NewDecoder(res.Body).Decode(&storiesIDs); err != nil {
-		return nil, err
-	}
-
-	return storiesIDs, nil
-}
-
-func getStory(id int) (Story, error) {
-	res, err := http.Get(fmt.Sprintf("https://hacker-news.firebaseio.com/v0/item/%d.json", id))
-	if err != nil {
-		return Story{}, err
-	}
-	defer res.Body.Close()
-
-	var story Story
-	if err = json.NewDecoder(res.Body).Decode(&story); err != nil {
-		return Story{}, err
-	}
-
-	return story, nil
-}
-
-func getStories(storiesIDs []int) ([]Story, error) {
-	var wg sync.WaitGroup
-	stories := make([]Story, len(storiesIDs))
-
-	for i, id := range storiesIDs {
-		wg.Add(1)
-
-		go func(i, id int) {
-			defer wg.Done()
-
-			story, err := getStory(id)
-			if err != nil {
-				log.Fatalln(err)
-				return
-			}
-
-			if story.Type == "job" {
-				stories[i] = story
-			}
-		}(i, id)
-	}
-
-	wg.Wait()
-
-	return stories, nil
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	storiesIDs, err := getStoriesIDs()
-	if err != nil {
-		log.Fatalln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Internal Server Error"))
-		return
-	}
-
-	stories, err := getStories(storiesIDs)
-	if err != nil {
-		log.Fatalln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Internal Server Error"))
-		return
-	}
-
-	bytes, err := json.Marshal(stories)
-	if err != nil {
-		log.Fatalln(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Internal Server Error"))
-		return
-	}
-
+func writeJSON(w http.ResponseWriter, status int, body any) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write(bytes)
+	w.WriteHeader(status)
+	if err := json.NewEncoder(w).Encode(body); err != nil {
+		log.Printf("write response: %v", err)
+	}
+}
+
+func writeError(w http.ResponseWriter, status int, message string) {
+	writeJSON(w, status, map[string]string{"error": message})
 }
 
 func main() {
-	http.HandleFunc("/", handler)
+	server := &http.Server{
+		Addr:              ":8080",
+		Handler:           NewHandler(NewClient()),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
 
-	log.Fatalln(http.ListenAndServe(":8080", nil))
+	log.Printf("jobs API listening on %s", server.Addr)
+	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		log.Fatal(err)
+	}
 }
