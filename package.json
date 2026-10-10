@@ -10,7 +10,7 @@
     "dev": "bash scripts/dev.sh",
     "build": "next build",
     "start": "next start",
-    "test": "go test -C api ./..."
+    "test": "go test ./..."
   },
   "dependencies": {
     "date-fns": "4.4.0",

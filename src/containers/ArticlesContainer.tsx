@@ -17,8 +17,7 @@ interface ArticlesContainerProps {
 }
 
 export default function ArticlesContainer({ articles }: ArticlesContainerProps) {
-  const url = process.env.NEXT_PUBLIC_API_URL ?? null;
-  const { data, error } = useSWR<ArticleType[]>(url, fetcher, {
+  const { data, error } = useSWR<ArticleType[]>('/api/stories', fetcher, {
     fallbackData: articles,
   });
 
