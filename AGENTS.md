@@ -1,6 +1,6 @@
 # hackernews-jobs
 
-Official Hacker News job stories from `jobstories.json`. Next.js server-renders that list by reading Firebase directly. `/api/stories` is the same list from the Go function. Do not call that function from the server render: on Vercel the request never reaches Go. Do not switch the product to the monthly "Ask HN: Who is hiring?" thread.
+Official Hacker News job stories from `jobstories.json`. Next.js server-renders that list by reading Firebase directly and caches it for five minutes. Do not switch the product to the monthly "Ask HN: Who is hiring?" thread.
 
 ## Commands
 
@@ -15,9 +15,9 @@ pnpm build
 pnpm start
 ```
 
-`pnpm dev` starts the Go API on port 8080 and Next.js on port 3000. No environment variables are required. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list. `pnpm test` runs the Go tests and the job-list tests. `pnpm lint` and `pnpm format:check` must pass before a change is done. `pnpm build` builds the Next.js app. `pnpm start` serves that build. The page does not need the Go process.
+`pnpm dev` starts Next.js on port 3000. No environment variables are required. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list. `pnpm test` runs the job-list tests. `pnpm lint` and `pnpm format:check` must pass before a change is done. `pnpm build` builds the Next.js app. `pnpm start` serves that build.
 
-Toolchain: Node.js 24.21.0, pnpm 12.11.2, Go 1.27.2, Next.js 16.4.0, React 19.3.0, TypeScript 7.0.2. Biome lints and formats the TypeScript. `gofmt` covers Go. `eslint-config-next` cannot load TypeScript 7, so ESLint is not the linter.
+Toolchain: Node.js 24.21.0, pnpm 12.11.2, Next.js 16.4.0, React 19.3.0, TypeScript 7.0.2. Biome lints and formats the TypeScript. `eslint-config-next` cannot load TypeScript 7, so ESLint is not the linter.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

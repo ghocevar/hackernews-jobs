@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Fail unless the deployed site's / returns 200 and includes a live job title.
+# Fail unless the deployed homepage returns 200 and contains every official job.
 set -euo pipefail
 
 url="${1:-}"
@@ -28,24 +28,38 @@ url="${url%/}"
 echo "Smoking ${url}/"
 
 code="$(curl -fsS -o /tmp/hn-page.html -w '%{http_code}' --max-time 30 "${url}/")"
-curl -fsS -o /tmp/hn-stories.json --max-time 30 "${url}/api/stories" >/dev/null
 
 python3 - "$code" <<'PY'
 import json
 import sys
+import urllib.request
 from pathlib import Path
 
 code = sys.argv[1]
 html = Path("/tmp/hn-page.html").read_text(errors="replace")
-stories = json.loads(Path("/tmp/hn-stories.json").read_text())
-titles = [story["title"] for story in stories if story.get("title")]
-print(f"GET / -> {code}, titles {len(titles)}, html bytes {len(html)}")
+base = "https://hacker-news.firebaseio.com"
+
+def get_json(path: str):
+    with urllib.request.urlopen(base + path, timeout=30) as response:
+        return json.load(response)
+
+ids = get_json("/v0/jobstories.json")
+titles = []
+for story_id in ids:
+    item = get_json(f"/v0/item/{story_id}.json")
+    if isinstance(item, dict) and item.get("type") == "job" and item.get("title"):
+        titles.append(item["title"])
+
+articles = html.count("<article")
+missing = [title for title in titles if title not in html]
+print(f"GET / -> {code}, firebase jobs {len(titles)}, articles {articles}")
 if code != "200":
     sys.exit(f"GET / returned {code}")
 if not titles:
-    sys.exit("API returned no job titles")
-found = next((title for title in titles if title in html), None)
-if not found:
-    sys.exit(f"HTML did not include a live job title such as {titles[0]!r}")
-print(f"HTML includes {found!r}")
+    sys.exit("Firebase returned no job titles")
+if missing:
+    sys.exit(f"HTML is missing {len(missing)} job titles, including {missing[0]!r}")
+if articles != len(titles):
+    sys.exit(f"HTML has {articles} articles, Firebase has {len(titles)} jobs")
+print("HTML includes every official job")
 PY

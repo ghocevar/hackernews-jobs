@@ -17,35 +17,31 @@ interface RawStory {
   text?: string;
 }
 
-let cached: { expires: number; stories: Article[] } | null = null;
-let loading: Promise<Article[]> | null = null;
+const cached = new Map<string, { expires: number; stories: Article[] }>();
+const loading = new Map<string, Promise<Article[]>>();
 
 export async function loadJobStories(
   baseURL = defaultBaseURL
 ): Promise<Article[]> {
-  const useCache = baseURL === defaultBaseURL;
-  if (useCache && cached && cached.expires > Date.now()) {
-    return cached.stories;
+  const hit = cached.get(baseURL);
+  if (hit && hit.expires > Date.now()) {
+    return hit.stories;
   }
-  if (useCache && loading) {
-    return loading;
-  }
-
-  const run = fetchJobStories(baseURL).then((stories) => {
-    if (useCache) {
-      cached = { expires: Date.now() + cacheTTLMs, stories };
-    }
-    return stories;
-  });
-
-  if (!useCache) {
-    return run;
+  const pending = loading.get(baseURL);
+  if (pending) {
+    return pending;
   }
 
-  loading = run.finally(() => {
-    loading = null;
-  });
-  return loading;
+  const run = fetchJobStories(baseURL)
+    .then((stories) => {
+      cached.set(baseURL, { expires: Date.now() + cacheTTLMs, stories });
+      return stories;
+    })
+    .finally(() => {
+      loading.delete(baseURL);
+    });
+  loading.set(baseURL, run);
+  return run;
 }
 
 async function fetchJobStories(baseURL: string): Promise<Article[]> {
