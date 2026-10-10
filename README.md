@@ -1,6 +1,6 @@
 # hackernews-jobs
 
-Lists the official Hacker News job stories: the YC hiring posts from [`jobstories.json`](https://hacker-news.firebaseio.com/v0/jobstories.json). The Next.js app and the Go API deploy as one Vercel project. The page server-renders `/api/stories` on the same origin. The browser does not refetch the list.
+Lists the official Hacker News job stories: the YC hiring posts from [`jobstories.json`](https://hacker-news.firebaseio.com/v0/jobstories.json). The Next.js app and the Go API deploy as one Vercel project. The page server-renders the list from Firebase. `/api/stories` serves the same list from Go. The browser does not refetch the list.
 
 ## Toolchain
 
@@ -26,13 +26,13 @@ pnpm build
 pnpm start
 ```
 
-`pnpm dev` starts the Go API on port 8080 and Next.js on port 3000. No environment variables are required. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list. `pnpm test` runs the Go tests and the job-list tests. `pnpm lint` and `pnpm format:check` must pass before a change is done. `pnpm build` builds the Next.js app. `pnpm start` serves that build and, off Vercel, still expects the API on port 8080.
+`pnpm dev` starts the Go API on port 8080 and Next.js on port 3000. No environment variables are required. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list. `pnpm test` runs the Go tests and the job-list tests. `pnpm lint` and `pnpm format:check` must pass before a change is done. `pnpm build` builds the Next.js app. `pnpm start` serves that build. The page does not need the Go process.
 
 The API remembers the list for 5 minutes. A repeat view does not read every Firebase item again. GitHub Actions runs test, lint, format:check, and build.
 
 ## Deploying to Vercel
 
-One project serves the website and the API. The site calls `/api/stories`. There is no Cloud Run service and no API URL to configure.
+One project serves the website and the API. The page reads Firebase while it renders, because a server render that fetches this deployment's own `/api/stories` does not reach the Go function. `/api/stories` is still the public JSON API. There is no Cloud Run service and no API URL to configure.
 
 **Environment variables:** none. Do not add `API_URL`, `NEXT_PUBLIC_API_URL`, or any Cloud Run setting. Vercel sets `VERCEL` itself; you do not add it.
 

@@ -26,3 +26,16 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm build
+
+  smoke:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Smoke-test the deployment homepage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/smoke-deployment.sh
