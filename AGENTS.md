@@ -17,7 +17,7 @@ pnpm start
 
 `pnpm dev` starts the Go API on port 8080 and Next.js on port 3000. No environment variables are required. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list. `pnpm test` runs the Go tests and the job-list tests. `pnpm lint` and `pnpm format:check` must pass before a change is done. `pnpm build` builds the Next.js app. `pnpm start` serves that build and, off Vercel, still expects the API on port 8080.
 
-Toolchain: Node.js 24.21.0, pnpm 10.33.4, Go 1.27.2, Next.js 16.4.0, React 19.3.0, TypeScript 7.0.2. Biome lints and formats the TypeScript. `gofmt` covers Go. `eslint-config-next` cannot load TypeScript 7, so ESLint is not the linter.
+Toolchain: Node.js 24.21.0, pnpm 12.11.2, Go 1.27.2, Next.js 16.4.0, React 19.3.0, TypeScript 7.0.2. Biome lints and formats the TypeScript. `gofmt` covers Go. `eslint-config-next` cannot load TypeScript 7, so ESLint is not the linter.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
