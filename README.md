@@ -13,29 +13,22 @@ Lists the official Hacker News job stories: the YC hiring posts from [`jobstorie
 | React | 19.3.0 |
 | TypeScript | 7.0.2 |
 
-## Running locally
-
-No environment variables are required.
+## Commands
 
 ```bash
 pnpm install
 pnpm dev
-```
-
-`pnpm dev` starts the Go API on port 8080 and the Next.js app on port 3000. Next.js proxies `/api/stories` to the Go process. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list.
-
-The API remembers that list for 5 minutes. A repeat view does not read every Firebase item again.
-
-## Checks
-
-```bash
 pnpm test
+pnpm lint
+pnpm format
+pnpm format:check
 pnpm build
+pnpm start
 ```
 
-`pnpm test` runs `go test ./...`. `pnpm build` builds the Next.js app. GitHub Actions runs both.
+`pnpm dev` starts the Go API on port 8080 and Next.js on port 3000. No environment variables are required. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list. `pnpm test` runs the Go tests and the job-list tests. `pnpm lint` and `pnpm format:check` must pass before a change is done. `pnpm build` builds the Next.js app. `pnpm start` serves that build and, off Vercel, still expects the API on port 8080.
 
-`pnpm start` serves the production Next.js build. Locally it still expects the Go API on port 8080. On Vercel you do not run it yourself.
+The API remembers the list for 5 minutes. A repeat view does not read every Firebase item again. GitHub Actions runs test, lint, format:check, and build.
 
 ## Deploying to Vercel
 

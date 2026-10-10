@@ -1,0 +1,8 @@
+{
+  "name": "hackernews-jobs",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "user": "ubuntu",
+  "install": "corepack pnpm install --frozen-lockfile"
+}

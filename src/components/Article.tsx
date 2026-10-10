@@ -1,5 +1,6 @@
 import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
 import type { Article as ArticleType } from '../interfaces/Article';
+import { jobHref } from '../lib/jobs';
 import { plainText } from '../lib/plainText';
 
 const excerptLength = 280;
@@ -12,8 +13,15 @@ function excerpt(text: string): string {
   return `${plain.slice(0, excerptLength - 1).trimEnd()}…`;
 }
 
-export default function Article({ id, title, url, by, time, text }: ArticleType) {
-  const href = url || `https://news.ycombinator.com/item?id=${id}`;
+export default function Article({
+  id,
+  title,
+  url,
+  by,
+  time,
+  text,
+}: ArticleType) {
+  const href = jobHref({ id, url });
   const summary = text ? excerpt(text) : '';
   const posted = formatDistanceToNowStrict(fromUnixTime(time));
 

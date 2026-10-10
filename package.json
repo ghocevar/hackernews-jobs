@@ -10,7 +10,10 @@
     "dev": "bash scripts/dev.sh",
     "build": "next build",
     "start": "next start",
-    "test": "go test ./..."
+    "test": "go test ./... && node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/lib/jobList.test.ts",
+    "lint": "biome lint . && bash scripts/gofmt-check.sh",
+    "format": "biome format --write . && gofmt -w hn api cmd",
+    "format:check": "biome check --formatter-enabled=true --linter-enabled=false --assist-enabled=false . && bash scripts/gofmt-check.sh"
   },
   "dependencies": {
     "date-fns": "4.4.0",
@@ -19,6 +22,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
     "@types/node": "24.19.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",

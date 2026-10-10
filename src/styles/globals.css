@@ -16,7 +16,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', Palatino, serif;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
   font-size: 1.0625rem;
   line-height: 1.5;
 }
@@ -99,7 +99,7 @@ button:focus-visible {
   gap: 0.35rem 1rem;
   margin: 0.4rem 0 0;
   color: var(--muted);
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: "Segoe UI", system-ui, sans-serif;
   font-size: 0.92rem;
 }
 
