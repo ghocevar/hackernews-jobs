@@ -1,6 +1,6 @@
 # hackernews-jobs
 
-Official Hacker News job stories from `jobstories.json`. Next.js server-renders that list by reading Firebase directly and caches it for five minutes. Do not switch the product to the monthly "Ask HN: Who is hiring?" thread.
+Official Hacker News job stories from `jobstories.json`. Next.js server-renders that list by reading Firebase directly. Firebase responses are cached for five minutes, including across server processes. A failed refresh keeps the last complete list. An incomplete load is not cached. Do not switch the product to the monthly "Ask HN: Who is hiring?" thread.
 
 ## Commands
 

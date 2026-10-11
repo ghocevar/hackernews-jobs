@@ -27,7 +27,7 @@ pnpm start
 
 `pnpm dev` starts Next.js on port 3000. No environment variables are required. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list. `pnpm test` runs the job-list tests. `pnpm lint` and `pnpm format:check` must pass before a change is done. `pnpm build` builds the Next.js app. `pnpm start` serves that build.
 
-The server remembers the list for 5 minutes. A repeat view does not read every Firebase item again. GitHub Actions runs test, lint, format:check, build, and a homepage smoke test.
+Each Firebase response is kept for 5 minutes, including after a new server process starts. A repeat view does not download every job again. If a refresh fails, the last complete list stays up. An incomplete load is not saved. GitHub Actions runs test, lint, format:check, build, and a homepage smoke test against that commit's deployment.
 
 ## Deploying to Vercel
 

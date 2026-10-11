@@ -1,9 +1,11 @@
 import type { Article } from '../interfaces/Article';
 
 const defaultBaseURL = 'https://hacker-news.firebaseio.com';
-const cacheTTLMs = 5 * 60 * 1000;
+const cacheTTLSeconds = 300;
+const cacheTTLMs = cacheTTLSeconds * 1000;
 const maxWorkers = 32;
 const maxResponseBytes = 4 * 1024 * 1024;
+const requestTimeoutMs = 8_000;
 const userAgent =
   'hackernews-jobs (+https://github.com/ghocevar/hackernews-jobs)';
 
@@ -17,11 +19,22 @@ interface RawStory {
   text?: string;
 }
 
+type StoryLoad =
+  | { status: 'job'; article: Article }
+  | { status: 'absent' }
+  | { status: 'failed' };
+
+interface JobList {
+  stories: Article[];
+  complete: boolean;
+}
+
 const cached = new Map<string, { expires: number; stories: Article[] }>();
 const loading = new Map<string, Promise<Article[]>>();
 
 export async function loadJobStories(
-  baseURL = defaultBaseURL
+  baseURL = defaultBaseURL,
+  ttlMs = cacheTTLMs
 ): Promise<Article[]> {
   const hit = cached.get(baseURL);
   if (hit && hit.expires > Date.now()) {
@@ -33,9 +46,13 @@ export async function loadJobStories(
   }
 
   const run = fetchJobStories(baseURL)
-    .then((stories) => {
-      cached.set(baseURL, { expires: Date.now() + cacheTTLMs, stories });
-      return stories;
+    .then((list) => remember(baseURL, ttlMs, list))
+    .catch((error: unknown) => {
+      const stale = cached.get(baseURL);
+      if (stale) {
+        return stale.stories;
+      }
+      throw error;
     })
     .finally(() => {
       loading.delete(baseURL);
@@ -44,27 +61,59 @@ export async function loadJobStories(
   return run;
 }
 
-async function fetchJobStories(baseURL: string): Promise<Article[]> {
+function remember(baseURL: string, ttlMs: number, list: JobList): Article[] {
+  if (list.complete) {
+    cached.set(baseURL, { expires: Date.now() + ttlMs, stories: list.stories });
+    return list.stories;
+  }
+  const stale = cached.get(baseURL);
+  if (stale) {
+    return stale.stories;
+  }
+  return list.stories;
+}
+
+async function fetchJobStories(baseURL: string): Promise<JobList> {
   const ids = await getJSON<number[]>(baseURL, '/v0/jobstories.json');
   if (!Array.isArray(ids)) {
     throw new Error('hacker news jobstories.json was not a list');
   }
 
   const loaded = await mapPool(ids, maxWorkers, (id) => loadStory(baseURL, id));
-  const stories = loaded.filter((story): story is Article => story !== null);
-  if (ids.length > 0 && stories.length === 0) {
+  const stories: Article[] = [];
+  let failed = 0;
+  for (const item of loaded) {
+    switch (item.status) {
+      case 'job':
+        stories.push(item.article);
+        break;
+      case 'absent':
+        break;
+      case 'failed':
+        failed += 1;
+        break;
+      default: {
+        const unexpected: never = item;
+        throw new Error(`unexpected story load: ${String(unexpected)}`);
+      }
+    }
+  }
+  if (stories.length === 0 && failed > 0) {
     throw new Error(
       `hacker news returned ${ids.length} job ids but none could be loaded`
     );
   }
-  return stories;
+  return { stories, complete: failed === 0 };
 }
 
-async function loadStory(baseURL: string, id: number): Promise<Article | null> {
+async function loadStory(baseURL: string, id: number): Promise<StoryLoad> {
   try {
-    const story = await getJSON<RawStory>(baseURL, `/v0/item/${id}.json`);
-    if (story.type !== 'job' || !story.id || !story.title) {
-      return null;
+    const story = await getJSON<RawStory | null>(
+      baseURL,
+      `/v0/item/${id}.json`
+    );
+    if (story?.type !== 'job' || !story?.id || !story?.title) {
+      return { status: 'absent' };
     }
     const article: Article = {
       id: story.id,
@@ -78,9 +127,9 @@ async function loadStory(baseURL: string, id: number): Promise<Article | null> {
     if (story.text) {
       article.text = story.text;
     }
-    return article;
+    return { status: 'job', article };
   } catch {
-    return null;
+    return { status: 'failed' };
   }
 }
 
@@ -91,7 +140,8 @@ async function getJSON<T>(baseURL: string, path: string): Promise<T> {
       accept: 'application/json',
       'user-agent': userAgent,
     },
-    cache: 'no-store',
+    signal: AbortSignal.timeout(requestTimeoutMs),
+    next: { revalidate: cacheTTLSeconds },
   });
   if (!res.ok) {
     throw new Error(`hacker news ${path}: ${res.status}`);

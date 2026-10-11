@@ -1,7 +1,7 @@
 import ArticleCard from '../components/Article';
 import { loadJobStories } from '../lib/hnStories';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function Home() {
   const articles = await loadJobStories();

@@ -1,7 +1,7 @@
-import { formatDistanceToNowStrict, fromUnixTime } from 'date-fns';
 import type { Article as ArticleType } from '../interfaces/Article';
 import { jobHref } from '../lib/jobs';
 import { plainText } from '../lib/plainText';
+import { postedLabel } from '../lib/postedLabel';
 
 const excerptLength = 280;
 
@@ -23,7 +23,7 @@ export default function Article({
 }: ArticleType) {
   const href = jobHref({ id, url });
   const summary = text ? excerpt(text) : '';
-  const posted = formatDistanceToNowStrict(fromUnixTime(time));
+  const posted = postedLabel(time);
 
   return (
     <article className="job">
@@ -34,13 +34,15 @@ export default function Article({
       </h2>
       <p className="meta">
         <span data-testid="article-by">By {by}</span>
-        <time
-          data-testid="article-time"
-          dateTime={new Date(time * 1000).toISOString()}
-          suppressHydrationWarning
-        >
-          Posted {posted} ago
-        </time>
+        {posted ? (
+          <time
+            data-testid="article-time"
+            dateTime={new Date(time * 1000).toISOString()}
+            suppressHydrationWarning
+          >
+            {posted}
+          </time>
+        ) : null}
       </p>
       {summary ? <p className="excerpt">{summary}</p> : null}
     </article>
