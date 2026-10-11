@@ -34,4 +34,5 @@ jobs:
       - name: Smoke-test the deployment homepage
         env:
           GH_TOKEN: ${{ github.token }}
+          SMOKE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: bash scripts/smoke-deployment.sh

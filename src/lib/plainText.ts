@@ -7,23 +7,34 @@ const namedEntities: Record<string, string> = {
   quot: '"',
 };
 
+function codePoint(entity: string): string | null {
+  const hex = entity.startsWith('#x') || entity.startsWith('#X');
+  if (!hex && !entity.startsWith('#')) {
+    return null;
+  }
+  const raw = hex ? entity.slice(2) : entity.slice(1);
+  if (raw.length === 0) {
+    return null;
+  }
+  const code = Number.parseInt(raw, hex ? 16 : 10);
+  if (!Number.isInteger(code) || code < 0 || code > 0x10ffff) {
+    return null;
+  }
+  return String.fromCodePoint(code);
+}
+
 function decodeEntity(entity: string): string {
-  if (entity.startsWith('#x') || entity.startsWith('#X')) {
-    const code = Number.parseInt(entity.slice(2), 16);
-    return Number.isFinite(code) ? String.fromCodePoint(code) : '';
-  }
   if (entity.startsWith('#')) {
-    const code = Number.parseInt(entity.slice(1), 10);
-    return Number.isFinite(code) ? String.fromCodePoint(code) : '';
+    return codePoint(entity) ?? `&${entity};`;
   }
-  return namedEntities[entity] ?? '';
+  return namedEntities[entity] ?? `&${entity};`;
 }
 
 export function plainText(html: string): string {
-  const withoutTags = html.replace(/<[^>]*>/g, ' ');
-  const decoded = withoutTags.replace(
+  const decoded = html.replace(
     /&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z]+);/g,
     (_, entity: string) => decodeEntity(entity)
   );
-  return decoded.replace(/\s+/g, ' ').trim();
+  const withoutTags = decoded.replace(/<[^>]*>/g, ' ');
+  return withoutTags.replace(/\s+/g, ' ').trim();
 }
