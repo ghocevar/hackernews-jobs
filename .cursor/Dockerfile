@@ -1,6 +1,6 @@
 FROM ubuntu:24.04
 
-ARG NODE_VERSION=24.21.0
+ARG NODE_VERSION=24.22.1
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates curl git xz-utils \
