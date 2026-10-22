@@ -6,7 +6,7 @@ Lists the official Hacker News job stories: the YC hiring posts from [`jobstorie
 
 | Tool | Version |
 | --- | --- |
-| Node.js | 24.21.0 (Active LTS) |
+| Node.js | 24.22.1 (Active LTS) |
 | pnpm | 12.11.2 |
 | Next.js | 16.4.0 |
 | React | 19.3.0 |

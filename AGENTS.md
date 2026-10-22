@@ -17,7 +17,7 @@ pnpm start
 
 `pnpm dev` starts Next.js on port 3000. No environment variables are required. Open [http://localhost:3000](http://localhost:3000). The first response already contains the job list. `pnpm test` runs the job-list tests. `pnpm lint` and `pnpm format:check` must pass before a change is done. `pnpm build` builds the Next.js app. `pnpm start` serves that build.
 
-Toolchain: Node.js 24.21.0, pnpm 12.11.2, Next.js 16.4.0, React 19.3.0, TypeScript 7.0.2. Biome lints and formats the TypeScript. `eslint-config-next` cannot load TypeScript 7, so ESLint is not the linter.
+Toolchain: Node.js 24.22.1, pnpm 12.11.2, Next.js 16.4.0, React 19.3.0, TypeScript 7.0.2. Biome lints and formats the TypeScript. `eslint-config-next` cannot load TypeScript 7, so ESLint is not the linter.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
